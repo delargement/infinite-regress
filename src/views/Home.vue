@@ -1,7 +1,7 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <div>
+    <input type="text" placeholder="Search..">
+    <router-link to="/graph"><button>Search</button></router-link>
   </div>
 </template>
 
