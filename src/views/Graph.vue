@@ -22,7 +22,7 @@ export default class Graph extends Vue {
     ],
     "links": [
       {"source": "Myriel", "target": "Napoleon", "value": 1},
-      {"source": "Napoleon", "target": "Myriel", "value": 8},
+      // {"source": "Napoleon", "target": "Myriel", "value": 8},
     ],
   }
   chart = ForceGraph(this.miserables, {
@@ -37,6 +37,7 @@ export default class Graph extends Vue {
     d3.select('.graph').node().append(this.chart);
   }
 }
+
 // Copyright 2021 Observable, Inc.
 // Released under the ISC license.
 // https://observablehq.com/@d3/force-directed-graph
