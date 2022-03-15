@@ -1,6 +1,9 @@
 <template>
   <div class="graph">
     <div id="#svg" />
+    <div class="sliding-menu">
+      <p>Hey</p>
+    </div>
   </div>
 </template>
 
@@ -8,6 +11,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import * as d3 from "d3";
+import mis from '@/assets/mis.json';
 
 @Component({
   components: {
@@ -15,26 +19,23 @@ import * as d3 from "d3";
   },
 })
 export default class Graph extends Vue {
-  miserables = {
-    "nodes": [
-    {"id": "Myriel", "group": 1},
-    {"id": "Napoleon", "group": 1},
-    ],
-    "links": [
-      {"source": "Myriel", "target": "Napoleon", "value": 1},
-      {"source": "Napoleon", "target": "Myriel", "value": 8},
-    ],
-  }
+  miserables = mis;
+
   chart = ForceGraph(this.miserables, {
     nodeId: d => d.id,
     nodeGroup: d => d.group,
     nodeTitle: d => `${d.id}\n${d.group}`,
     linkStrokeWidth: l => Math.sqrt(l.value),
-    height: 600,
+    height: 1100,
   })
   mounted() {
     this.chart.setAttribute('id', 'force-graph');
-    d3.select('.graph').node().append(this.chart);
+    const svg = d3.select('.graph').node().append(this.chart);
+    d3.select('.graph').call(d3.zoom().on("zoom", function () {
+      d3.select('.graph').attr("zoom", d3.zoomTransform(d3.select('.graph')));
+    }))
+    svg
+
   }
 }
 // Copyright 2021 Observable, Inc.
@@ -44,27 +45,28 @@ function ForceGraph({
                       nodes, // an iterable of node objects (typically [{id}, …])
                       links // an iterable of link objects (typically [{source, target}, …])
                     }, {
-                      nodeId = d => d.id, // given d in nodes, returns a unique identifier (string)
-                      nodeGroup, // given d in nodes, returns an (ordinal) value for color
-                      nodeGroups, // an array of ordinal values representing the node groups
-                      nodeTitle, // given d in nodes, a title string
-                      nodeFill = "currentColor", // node stroke fill (if not using a group color encoding)
-                      nodeStroke = "#fff", // node stroke color
-                      nodeStrokeWidth = 3.5, // node stroke width, in pixels
-                      nodeStrokeOpacity = 0.8, // node stroke opacity
-                      nodeRadius = 10, // node radius, in pixels
-                      nodeStrength,
-                      linkSource = ({source}) => source, // given d in links, returns a node identifier string
-                      linkTarget = ({target}) => target, // given d in links, returns a node identifier string
-                      linkStroke = "#999", // link stroke color
-                      linkStrokeOpacity = 0.6, // link stroke opacity
-                      linkStrokeWidth = 1.5, // given d in links, returns a stroke width in pixels
-                      linkStrokeLinecap = "round", // link stroke linecap
-                      linkStrength,
-                      colors = d3.schemeTableau10, // an array of color strings, for the node groups
-                      width = 1200, // outer width, in pixels
-                      height = 400, // outer height, in pixels
-                      invalidation // when this promise resolves, stop the simulation
+  nodeId = d => d.id, // given d in nodes, returns a unique identifier (string)
+  nodeGroup, // given d in nodes, returns an (ordinal) value for color
+  nodeGroups, // an array of ordinal values representing the node groups
+  nodeTitle, // given d in nodes, a title string
+  nodeFill = "currentColor", // node stroke fill (if not using a group color encoding)
+  nodeStroke = "#fff", // node stroke color
+  nodeStrokeWidth = 1.5, // node stroke width, in pixels
+  nodeStrokeOpacity = 1, // node stroke opacity
+  nodeRadius = 10, // node radius, in pixels
+  nodeStrength,
+  linkSource = ({source}) => source, // given d in links, returns a node identifier string
+  linkTarget = ({target}) => target, // given d in links, returns a node identifier string
+  linkStroke = "#999", // link stroke color
+  linkStrokeOpacity = 0.6, // link stroke opacity
+  linkStrokeWidth = 1.5, // given d in links, returns a stroke width in pixels
+  linkStrokeLinecap = "round", // link stroke linecap
+  linkStrength = 0.1,
+  colors = d3.schemeTableau10, // an array of color strings, for the node groups
+                      width = 1800, // outer width, in pixels
+                      height = 800, // outer height, in pixels
+                      invalidation, // when this promise resolves, stop the simulation
+                      clickaction = ({ _ }) => console.log("alert"),
                     } = {}) {
   // Compute values.
   const N = d3.map(nodes, nodeId).map(intern);
@@ -123,7 +125,10 @@ function ForceGraph({
       .data(nodes)
       .join("circle")
       .attr("r", nodeRadius)
-      .call(drag(simulation));
+      .call(drag(simulation))
+      .on("click", d => {
+        clickaction(d)
+      });
 
   if (W) link.attr("stroke-width", ({index: i}) => W[i]);
   if (L) link.attr("stroke", ({index: i}) => L[i]);
@@ -176,6 +181,23 @@ function ForceGraph({
 </script>
 
 <style>
+#force-graph {
+  height: 100%;
+  width: 70%;
+  position: fixed;
+  left: 0;
+}
+.sliding-menu {
+  height: 100%;
+  width: 30%;
+  position: fixed;
+  right: 0;
+  background-color: #2c3e50;
+}
+circle:hover {
+  stroke: #a2d9ff;
+  stroke-width: 3px;
+}
 #force-graph {
 
 }
