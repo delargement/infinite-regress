@@ -19,6 +19,8 @@
 
 #nav {
   padding: 30px;
+  box-shadow:   0 4px 14px rgba(0,0,0,.25);
+  width: 100%;
 
   a {
     font-weight: bold;

@@ -28,13 +28,28 @@ export default class Graph extends Vue {
     linkStrokeWidth: l => Math.sqrt(l.value),
     height: 1100,
   })
+  created() {
+    function zoomIn3() { // Correct way
+      const inner = document.getElementById("force-graph");
+      alert('hey')
+      inner.setAttribute("transform", "scale(0.8)");
+    }
+
+    window.addEventListener('scroll', this.handleScroll);
+  }
   mounted() {
     this.chart.setAttribute('id', 'force-graph');
-    const svg = d3.select('.graph').node().append(this.chart);
-    d3.select('.graph').call(d3.zoom().on("zoom", function () {
-      d3.select('.graph').attr("zoom", d3.zoomTransform(d3.select('.graph')));
-    }))
-    svg
+   d3.select('.graph').node().append(this.chart);
+
+    function zoomIn3() { // Correct way
+      const inner = document.getElementById("force-graph");
+      alert('hey')
+      inner.setAttribute("transform", "scale(0.8)");
+    }
+
+    // window.addEventListener("scroll", zoomIn3);
+    // document.getElementById("force-graph").addEventListener('scroll', zoomIn3);
+
 
   }
 }
@@ -182,17 +197,21 @@ function ForceGraph({
 
 <style>
 #force-graph {
-  height: 100%;
+  height: 80%;
+  bottom: 0;
   width: 70%;
   position: fixed;
   left: 0;
+  transform: scale(1.55);
 }
 .sliding-menu {
-  height: 100%;
+  height: 90%;
   width: 30%;
   position: fixed;
   right: 0;
-  background-color: #2c3e50;
+  bottom: 0;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,.19);
 }
 circle:hover {
   stroke: #a2d9ff;
