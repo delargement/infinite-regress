@@ -8,8 +8,13 @@ async function callpython(args) {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
 	const spawn = require("child_process").spawn;
 	const pythonProcess = spawn('python3',["infinite-regress-backend/clustering.py", ...args]);
+	let chunk = ''
 	pythonProcess.stdout.on('data', (data) => {
-		return data.toString();
+		chunk += data.toString()
+	});
+	pythonProcess.stdout.on('exit', () => {
+		console.log(chunk)
+		return chunk
 	});
 }
 
