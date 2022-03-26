@@ -43,7 +43,7 @@ export default class Graph extends Vue {
 
   }
   api() {
-    return fetch('http://167.71.215.92:3000/q', {
+    return fetch('https://regress-backend.shirator.net/q', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
