@@ -18,8 +18,11 @@ app.get('/', async (req, res) => {
 	console.log(req.body)
 })
 app.get('/q',async (req,res)=>{
-	console.log(req)
-	if (!req.body.args) return
+	console.log(req.body)
+	if (!req.body.args) {
+		res.send('No args')
+		return
+	}
 	const ans = await callpython(req.body.args)
 	res.send(ans)
 })
