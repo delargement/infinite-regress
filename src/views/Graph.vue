@@ -32,9 +32,30 @@ export default class Graph extends Vue {
     linkStrokeWidth: l => Math.sqrt(l.value),
     height: 1100,
   })
+  api() {
+    return fetch('http://174.138.19.21:3000/q', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        args: ["a", "b"],
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+      });
+  }
   created() {
 
     console.log('query:' + this.query)
+
+    this.api().then(data => {
+      console.log('created' + data);
+      // this.chart.update(data);
+    });
+
     function zoomIn3() { // Correct way
       const inner = document.getElementById("force-graph");
       alert('hey')

@@ -1,7 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const express = require('express')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const cors = require('cors')
 const app = express()
 app.use(express.json());
+app.use(cors())
 const port = 3000
 
 async function callpython(args,res) {
