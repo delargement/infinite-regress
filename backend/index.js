@@ -10,11 +10,10 @@ const port = 3000
 async function callpython(args,res) {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
 	const spawn = require("child_process").spawn;
-	const pythonProcess = spawn('python3',["infinite-regress-backend/test.py"]);
+	const pythonProcess = spawn('python3',["infinite-regress-backend/prototype/clustering.py", args[0], 0]);
 	let chunk = ''
 	return pythonProcess.stdout.on('data', (data) => {
-		console.log('fweihfw')
-		chunk = data.toString();
+		chunk = JSON.parse(data.toString());
 		console.log(chunk);
 		res.json({graph: chunk});
 	});

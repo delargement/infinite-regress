@@ -1,7 +1,12 @@
 <template>
   <div>
-    <input type="text" v-model="query" placeholder="Search.." class="query-field"/>
-    <input type="submit" class="query-button" @click="search()" >
+
+    <h1>Infinite Regress</h1>
+    <img src="../assets/logo.jpg" alt="page logo" height="400">
+    <div>
+      <input type="text" v-model="query" placeholder="Search.." class="query-field"/>
+      <input type="submit" class="query-button" @click="search()" >
+    </div>
   </div>
 </template>
 
@@ -33,9 +38,13 @@ export default class Home extends Vue {
 <style>
 
 body {
-  padding-top: 10rem;
+  padding-top: 5rem;
   padding-left: 40rem;
   padding-right: 40rem;
+}
+
+img {
+  margin: 2rem;
 }
 
 .query-field {
