@@ -16,7 +16,7 @@ async function callpython(args,res) {
 		console.log('fweihfw')
 		chunk = data.toString();
 		console.log(chunk);
-		res.send(chunk);
+		res.json({graph: chunk});
 	});
 }
 
@@ -24,7 +24,7 @@ app.get('/', async (req, res) => {
 	res.send('Hello World!')
 	console.log(req.body)
 })
-app.get('/q',async (req,res) => {
+app.post('/q',async (req,res) => {
 	console.log(req.body)
 	if (!req.body.args) {
 		res.send('No args')

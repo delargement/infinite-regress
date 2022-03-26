@@ -42,9 +42,10 @@ export default class Graph extends Vue {
         args: ["a", "b"],
       }),
     })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
+        .then(response => response.json())
+      .then(async data => {
+        console.log('data' + data);
+        return data
       });
   }
   created() {
