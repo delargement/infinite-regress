@@ -1,7 +1,7 @@
 <template>
   <div>
-    <input type="text" placeholder="Search.."/>
-    <router-link to="/graph"><button>Search</button></router-link>
+    <input type="text" v-model="query" placeholder="Search.." class="query-field"/>
+    <input type="submit" class="query-button" @click="search()" >
   </div>
 </template>
 
@@ -14,5 +14,47 @@ import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
     HelloWorld
   },
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  query = '';
+  checkQuery(query: string) : boolean {
+    return query.length > 0;
+  }
+  search() {
+    if (!this.checkQuery(this.query))
+      return;
+
+    this.$router.push({
+      name: 'Graph',
+      params: {query: this.query}
+    });
+  }
+}
 </script>
+<style>
+
+body {
+  padding-top: 10rem;
+  padding-left: 40rem;
+  padding-right: 40rem;
+}
+
+.query-field {
+  /*margin-top: 20rem ;*/
+
+  /*width: 20%;*/
+  /*height: 30px;*/
+  /*border: 1px solid #ccc;*/
+  /*border-radius: 4px;*/
+  /*padding: 5px;*/
+}
+
+
+
+
+</style>
+
+if __name__ == init():
+  args = argv[]
+
+  if arg[0] == 'generate':
+    print(generate(args[2]))

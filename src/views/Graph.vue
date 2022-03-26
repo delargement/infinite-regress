@@ -2,7 +2,10 @@
   <div class="graph">
     <div id="#svg" />
     <div class="sliding-menu">
-      <p>Hey</p>
+      <h1>Article Name</h1>
+      <p>Article Description</p>
+      <p>Article abstract</p>
+      <button>Share</button>
     </div>
   </div>
 </template>
@@ -20,6 +23,7 @@ import mis from '@/assets/mis.json';
 })
 export default class Graph extends Vue {
   miserables = mis;
+  query = this.$route.params.query;
 
   chart = ForceGraph(this.miserables, {
     nodeId: d => d.id,
@@ -29,6 +33,8 @@ export default class Graph extends Vue {
     height: 1100,
   })
   created() {
+
+    console.log('query:' + this.query)
     function zoomIn3() { // Correct way
       const inner = document.getElementById("force-graph");
       alert('hey')
@@ -49,8 +55,6 @@ export default class Graph extends Vue {
 
     // window.addEventListener("scroll", zoomIn3);
     // document.getElementById("force-graph").addEventListener('scroll', zoomIn3);
-
-
   }
 }
 // Copyright 2021 Observable, Inc.
@@ -205,13 +209,19 @@ function ForceGraph({
   transform: scale(1.55);
 }
 .sliding-menu {
-  height: 90%;
+  height: 100%;
   width: 30%;
   position: fixed;
   right: 0;
   bottom: 0;
   background-color: #ffffff;
   box-shadow: 0 4px 12px rgba(0,0,0,.19);
+
+  padding-top: 5rem ;
+  padding-left: 4rem;
+  padding-right: 4rem;
+
+  text-align: left;
 }
 circle:hover {
   stroke: #a2d9ff;
