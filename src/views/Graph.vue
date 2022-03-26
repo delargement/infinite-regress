@@ -44,7 +44,7 @@ export default class Graph extends Vue {
     })
         .then(response => response.json())
       .then(async data => {
-        console.log('data' + data);
+        console.log(data);
         return data
       });
   }
@@ -53,8 +53,7 @@ export default class Graph extends Vue {
     console.log('query:' + this.query)
 
     this.api().then(data => {
-      console.log('created' + data);
-      // this.chart.update(data);
+      console.log(data.graph);
     });
 
     function zoomIn3() { // Correct way
