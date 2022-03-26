@@ -7,7 +7,7 @@ const port = 3000
 async function callpython(args) {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
 	const spawn = require("child_process").spawn;
-	const pythonProcess = spawn('python',["infinite-regress-backend/clustering.py", ...args]);
+	const pythonProcess = spawn('python3',["infinite-regress-backend/clustering.py", ...args]);
 	pythonProcess.stdout.on('data', (data) => {
 		return data.toString();
 	});
