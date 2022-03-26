@@ -24,14 +24,24 @@ import mis from '@/assets/mis.json';
 export default class Graph extends Vue {
   miserables = mis;
   query = this.$route.params.query;
+  initGraph(data) {
+    this.chart = ForceGraph(data, {
+      nodeId: d => d.id,
+      nodeGroup: d => d.group,
+      nodeTitle: d => `${d.id}\n${d.group}`,
+      linkStrokeWidth: l => Math.sqrt(l.value),
+      height: 1100,
+    })
+    this.chart.setAttribute('id', 'force-graph');
+    d3.select('.graph').node().append(this.chart);
 
-  chart = ForceGraph(this.miserables, {
-    nodeId: d => d.id,
-    nodeGroup: d => d.group,
-    nodeTitle: d => `${d.id}\n${d.group}`,
-    linkStrokeWidth: l => Math.sqrt(l.value),
-    height: 1100,
-  })
+    function zoomIn3() { // Correct way
+      const inner = document.getElementById("force-graph");
+      alert('hey')
+      inner.setAttribute("transform", "scale(0.8)");
+    }
+
+  }
   api() {
     return fetch('http://167.71.215.92:3000/q', {
       method: 'POST',
@@ -44,8 +54,8 @@ export default class Graph extends Vue {
     })
         .then(response => response.json())
       .then(async data => {
-        console.log(data);
-        return data
+
+        return JSON.parse(data.graph.toString().replace(/'/g, '"'));
       });
   }
   created() {
@@ -53,7 +63,8 @@ export default class Graph extends Vue {
     console.log('query:' + this.query)
 
     this.api().then(data => {
-      console.log(data.graph);
+      console.log(data);
+      this.initGraph(data)
     });
 
     function zoomIn3() { // Correct way
@@ -65,14 +76,6 @@ export default class Graph extends Vue {
     window.addEventListener('scroll', this.handleScroll);
   }
   mounted() {
-    this.chart.setAttribute('id', 'force-graph');
-   d3.select('.graph').node().append(this.chart);
-
-    function zoomIn3() { // Correct way
-      const inner = document.getElementById("force-graph");
-      alert('hey')
-      inner.setAttribute("transform", "scale(0.8)");
-    }
 
     // window.addEventListener("scroll", zoomIn3);
     // document.getElementById("force-graph").addEventListener('scroll', zoomIn3);
