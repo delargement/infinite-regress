@@ -4,7 +4,7 @@ const app = express()
 app.use(express.json());
 const port = 3000
 
-async function callpython(args) {
+async function callpython(args,res) {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
 	const spawn = require("child_process").spawn;
 	const pythonProcess = spawn('python3',["infinite-regress-backend/test.py"]);
@@ -13,7 +13,7 @@ async function callpython(args) {
 		console.log('fweihfw')
 		chunk = data.toString();
 		console.log(chunk);
-		return chunk
+		res.send(chunk);
 	});
 }
 
@@ -27,10 +27,7 @@ app.get('/q',async (req,res) => {
 		res.send('No args')
 		return
 	}
-	callpython(req.body.args).then(ans => {
-		console.log('ans' + ans.toString());
-		res.send(ans);
-	})
+	await callpython(req.body.args,res)
 })
 
 app.listen(port, () => {
