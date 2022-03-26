@@ -33,13 +33,13 @@ export default class Graph extends Vue {
     height: 1100,
   })
   api() {
-    return fetch('http://174.138.19.21:3000/q', {
+    return fetch('http://167.71.215.92:3000/q', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        args: ["a", "b"],
+        args: [this.query, 0],
       }),
     })
         .then(response => response.json())

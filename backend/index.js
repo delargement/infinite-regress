@@ -12,11 +12,15 @@ async function callpython(args,res) {
 	const spawn = require("child_process").spawn;
 	const pythonProcess = spawn('python3',["infinite-regress-backend/prototype/clustering.py", args[0], 0]);
 	let chunk = ''
-	return pythonProcess.stdout.on('data', (data) => {
-		chunk = JSON.parse(data.toString());
-		console.log(chunk);
+	pythonProcess.stdout.on('data', (data) => {
+		chunk += data.toString();
+	});
+	pythonProcess.on('close', (code) => {
+		console.log(`child process exited with code ${code}`);
 		res.json({graph: chunk});
 	});
+
+
 }
 
 app.get('/', async (req, res) => {
