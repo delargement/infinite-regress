@@ -22,7 +22,6 @@ async function callpython(args,res) {
 			'Access-Control-Allow-Origin': '*',
 		});
 	});
-
 }
 
 app.get('/', async (req, res) => {
