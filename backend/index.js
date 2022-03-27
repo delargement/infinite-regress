@@ -17,7 +17,10 @@ async function callpython(args,res) {
 	});
 	pythonProcess.on('close', (code) => {
 		console.log(`child process exited with code ${code}`);
-		res.json({graph: JSON.parse(chunk)});
+		res.json({
+			graph: JSON.parse(chunk),
+			'Access-Control-Allow-Origin': '*',
+		});
 	});
 
 }
