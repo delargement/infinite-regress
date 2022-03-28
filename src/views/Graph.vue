@@ -56,8 +56,8 @@ export default class Graph extends Vue {
     })
         .then(response => response.json())
       .then(async data => {
-
-        return JSON.parse(data.graph.toString().replace(/'/g, '"'));
+        console.log(data);
+        return data.graph;
       });
   }
   created() {
