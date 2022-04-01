@@ -64,7 +64,7 @@
         const query = document.getElementById("query-field").value;
         console.log(query)
         if (query.length > 0) {
-            window.location.href = window.location.href.slice(0,8) + "vis.html?query=" + query;
+            window.location.href = window.location.href.slice(0,-8) + "vis.html?query=" + query;
         }
     }
 </script>
