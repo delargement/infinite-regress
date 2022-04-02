@@ -10,16 +10,21 @@ const port = 3000
 async function callpython(args,res) {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
 	const spawn = require("child_process").spawn;
-	const pythonProcess = spawn('python3',["infinite-regress-backend/prototype/clustering.py", args[0], 0]);
+	const pythonProcess = spawn('python3',["citation-graph.py", args[0], 3, 5,6],{cwd:"infinite-regress-backend/citation-graph"});
 	let chunk = ''
+	pythonProcess.stdout.on('err', (err) => {
+		console.log(err);
+	})
 	pythonProcess.stdout.on('data', (data) => {
 		chunk += data.toString();
 	});
 	pythonProcess.on('close', (code) => {
+		console.log(chunk)
+		chunk = chunk.replace(/'/g,'"');
 		console.log(`child process exited with code ${code}`);
 		res.json({
-			graph: JSON.parse(chunk),
 			'Access-Control-Allow-Origin': '*',
+			graph: JSON.parse(chunk),
 		});
 	});
 }
@@ -28,7 +33,7 @@ app.get('/', async (req, res) => {
 	res.send('Hello World!')
 	console.log(req.body)
 })
-app.post('/q',async (req,res) => {
+app.post('/api',async (req,res) => {
 	console.log(req.body)
 	if (!req.body.args) {
 		res.send('No args')
