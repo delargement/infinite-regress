@@ -8,17 +8,27 @@
     <title>Infinite Regress</title>
     <script src="d3.v7.min.js" type="module"></script>
     <link rel="stylesheet" href="https://taniarascia.github.io/primitive/css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
+
+    <span style="display: flex">
     <a id="back" class="button" style="margin: 2rem" onclick="goback()" >Return</a>
+    <h4 id="query-info"></h4>
+    </span>
+
+<!--    <div style="background-color: red; width: 5rem; height:5rem;  position: absolute">-->
+    </div>
     <div class="graph">
         <div id="#svg" ></div>
         <div class="sliding-menu">
-            <h4 id="query-info"></h4>
             <h1 id="article-name">Wait shortly...</h1>
             <h2 id="abstract-header"></h2>
             <p id="article-abstract"></p>
-            <button>Share</button>
+<!--        <h4 id="cluster-header">Cluster 1 summary:</h4>-->
+            <h4 id="cluster-header"></h4>
+            <p id="cluster-summary"></p>
+<!--            <button>View cluster summary</button>-->
         </div>
     </div>
 </body>
@@ -33,52 +43,83 @@
     const depth = params.get('depth');
     console.log(query + " " + depth);
     if (query && depth) {
-      document.getElementById('query-info').innerHTML = "You queried " + query + " with depth " + depth + ".";
+      document.getElementById('query-info').innerHTML = "You queried \"" + query + "\" with depth " + depth + ".";
 	    // document.write(`Hello ${query}`);
     } else {
 	    window.location.replace(window.location.origin + "/index.html");
 	    // document.write('Hello World');
         return
     }
+    function id2clustergen(nodes) {
+        const cluster = {};
+        for (const node of nodes) {
+            cluster[node.id] = node.group;
+        }
+        return cluster
+    }
+    function associate(key,val,obj) {
+      const dic = {};
+      for (const e of obj) {
+        dic[e[key]] = e[val];
+      }
+        return dic
+    }
     api(query,depth).then(data => {
         console.log(data);
         const graph = data.graph_data
         const paper_data = data.paper_data
-          document.getElementById('article-name').innerHTML = '';
-        initGraph(graph,paper_data)
+        const cluster_data = data.cluster_data
+        const id2cluster = associate('id','group',graph.nodes)
+        const cluster2summary = associate('cluster','summary',cluster_data)
+        console.log(id2cluster)
+        id2summary = (x) => cluster2summary[id2cluster[x]]
+        document.getElementById('article-name').innerHTML = '';
+        initGraph(graph,paper_data,id2cluster, id2summary,);
     });
   }
     main() ;
 		function api(query,depth) {
-			return fetch('https://backend.shirator.net/api', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Access-Control-Allow-Origin': '*',
-					'Access-Control-Allow-Credentials': true,
-				},
-				body: JSON.stringify({
-					args: [query, depth],
-				}),
-			})
-				.then(response => response.json())
-				.then(async data => {
-					console.log(data);
-					return data.graph;
-				});
+			return axios.post('https://backend.shirator.net/api',
+                {
+                  args: [query,depth]
+                },
+              {timeout: 180 * 1000}
+            ).then(async data => {
+                console.log(data);
+                return data.data.graph;
+            })
+			// return fetch('https://backend.shirator.net/api', {
+			// 	method: 'POST',
+			// 	headers: {
+			// 		'Content-Type': 'application/json',
+			// 		'Access-Control-Allow-Origin': '*',
+			// 		'Access-Control-Allow-Credentials': true,
+			// 	},
+			// 	body: JSON.stringify({
+			// 		args: [query, depth],
+			// 	}),
+			// })
+			// 	.then(response => response.json())
+			// 	.then(async data => {
+			// 		console.log(data);
+			// 		return data.graph;
+			// 	});
 		}
-		function initGraph(data,paper_data) {
+		function initGraph(data,paper_data,id2cluster,id2summary) {
 			const chart = ForceGraph(data, {
 				nodeId: d => d.id,
 				nodeGroup: d => d.group,
 				nodeTitle: d => `${d.id}\n${d.group}`,
 				linkStrokeWidth: l => Math.sqrt(l.value),
                 clickaction: (d) => {
+
 					console.log(d)
                     document.getElementById("article-name").innerHTML = d.srcElement.__data__.id;
 	                document.getElementById("abstract-header").innerHTML = "Abstract:";
 	                document.getElementById("article-abstract").innerHTML = paper_data[d.srcElement.__data__.id];
-                    // document.getElementById("article-abstract").innerHTML = d.group;
+                    document.getElementById('cluster-header').innerHTML = "Cluster " + id2cluster[d.srcElement.__data__.id] + " summary:";
+	                document.getElementById('cluster-summary').innerHTML = id2summary(d.srcElement.__data__.id);
+	                // document.getElementById("article-abstract").innerHTML = d.group;
                     // document.getElementById("sliding-menu").style.left = "0";
                 },
 				height: 1100,
