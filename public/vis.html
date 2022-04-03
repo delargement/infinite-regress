@@ -83,7 +83,7 @@
                 {
                   args: [query,depth]
                 },
-              {timeout: 180 * 1000}
+              {timeout: 5 * 60 * 1000}
             ).then(async data => {
                 console.log(data);
                 return data.data.graph;
