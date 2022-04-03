@@ -29,16 +29,17 @@
     const params = new URLSearchParams(document.location.search);
     // console.log(params)
     const query = params.get('query');
-    console.log(query)
-    if (query) {
-      document.getElementById('query-info').innerHTML = "You queried " + query;
-      // document.write(`Hello ${query}`);
+    const depth = params.get('depth');
+    console.log(query + " " + depth);
+    if (query && depth) {
+      document.getElementById('query-info').innerHTML = "You queried " + query + " with depth " + depth + ".";
+	    // document.write(`Hello ${query}`);
     } else {
 	    window.location.replace(window.location.origin + "/index.html");
 	    // document.write('Hello World');
         return
     }
-    api(query).then(data => {
+    api(query,depth).then(data => {
         console.log(data);
         const graph = data.graph_data
         const paper_data = data.paper_data
@@ -46,7 +47,7 @@
     });
   }
     main() ;
-		function api(query) {
+		function api(query,depth) {
 			return fetch('https://backend.shirator.net/api', {
 				method: 'POST',
 				headers: {
@@ -55,7 +56,7 @@
 					'Access-Control-Allow-Credentials': true,
 				},
 				body: JSON.stringify({
-					args: [query, 0],
+					args: [query, depth],
 				}),
 			})
 				.then(response => response.json())

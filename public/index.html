@@ -15,7 +15,15 @@
         <div class="banner-field">
             <h3>What would you like to know</h3>
             <input id="query-field" type="text" placeholder="Search.." class="query-field "/>
-            <input type="submit" class="query-button" onclick="search()" >
+            <div class="params" style="display: flex; flex-direction: row">
+            <div class="slidecontainer" style="width: 30%">
+                <span>
+                <input type="range" min="1" max="5" value="1" class="slider" id="myRange" onchange="slider(value)" oninput="slider(value)">
+                    <label id="slider-val" style="margin: 0">Depth: 1</label>
+                </span>
+            </div>
+            <input type="submit" class="query-button" onclick="search()" style="">
+            </div>
         </div>
     </div>
     <section class="features">
@@ -68,11 +76,18 @@
 	    })
     </script>
 <script>
+  function main() {
+	document.getElementById("myRange").value = 1;
+  }
+	main();
+  function slider(value) {
+    document.getElementById("slider-val").innerHTML = "Depth: " + value;
+  }
     function search() {
         const query = document.getElementById("query-field").value;
         console.log(query)
         if (query.length > 0) {
-            window.location.replace(window.location.origin + "/vis.html?query=" + query);
+            window.location.replace(window.location.origin + "/vis.html?query=" + query + "&depth=" + document.getElementById("myRange").value);
         }
     }
 </script>
@@ -258,7 +273,7 @@ return Object.assign(svg.node(), {scales: {color}});
        padding: 15px;
        border-radius: 15px;
        border: white 2px solid;
-        color:black;
+        color:white;
 	   position: relative;
 	   bottom: 1rem;
 	   left: 30%;
@@ -307,6 +322,8 @@ return Object.assign(svg.node(), {scales: {color}});
        position: relative;
        float: right;
        align-items: end;
+	   margin: 1.5rem;
+       margin-left: auto;
    }
    .centering {
        display: block;
