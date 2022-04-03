@@ -83,8 +83,11 @@
                 {
                   args: [query,depth]
                 },
-              {timeout: 5 * 60 * 1000}
-            ).then(async data => {
+              {timeout:  10 * 60 * 1000}
+            ).catch(err => {
+						    console.log(err);
+								alert("Sorry, an error occurred. Try the same query again or use a different query. Error: " + err.message);
+            }).then(async data => {
                 console.log(data);
                 return data.data.graph;
             })
