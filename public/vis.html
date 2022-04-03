@@ -4,26 +4,25 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+<!--    <link rel="icon" href="<%= BASE_URL %>favicon.ico">-->
+    <title>Infinite Regress</title>
     <script src="./d3.v7.min.js" type="module"></script>
+    <link rel="stylesheet" href="https://taniarascia.github.io/primitive/css/main.css">
 </head>
 <body>
     <div class="graph">
         <div id="#svg" ></div>
         <div class="sliding-menu">
-            <h1>Article Name</h1>
-            <p>Article Description</p>
-            <p>Article abstract</p>
+            <h1 id="article-name">Wait shortly...</h1>
+            <h2 id="abstract-header"></h2>
+            <p id="article-abstract"></p>
             <button>Share</button>
         </div>
     </div>
-<script>
-
+<script type="module">
     function main() {
-        console.log(document.location.search)
     const params = new URLSearchParams(document.location.search);
-    console.log(params)
+    // console.log(params)
     const query = params.get('query');
     console.log(query)
     if (query) {
@@ -35,7 +34,9 @@
     }
     api(query).then(data => {
         console.log(data);
-        this.initGraph(data)
+        const graph = data.graph_data
+        const paper_data = data.paper_data
+        initGraph(graph,paper_data)
     });
   }
     main() ;
@@ -57,16 +58,24 @@
 					return data.graph;
 				});
 		}
-		function initGraph(data) {
+		function initGraph(data,paper_data) {
 			const chart = ForceGraph(data, {
 				nodeId: d => d.id,
 				nodeGroup: d => d.group,
 				nodeTitle: d => `${d.id}\n${d.group}`,
 				linkStrokeWidth: l => Math.sqrt(l.value),
+                clickaction: (d) => {
+					console.log(d)
+                    document.getElementById("article-name").innerHTML = d.srcElement.__data__.id;
+	                document.getElementById("abstract-header").innerHTML = "Abstract:";
+	                document.getElementById("article-abstract").innerHTML = paper_data[d.srcElement.__data__.id];
+                    // document.getElementById("article-abstract").innerHTML = d.group;
+                    // document.getElementById("sliding-menu").style.left = "0";
+                },
 				height: 1100,
 			})
 			chart.setAttribute('id', 'force-graph');
-			console.log(d3)
+			// console.log(d3)
 			d3.select('.graph').node().append(chart);
 
 		}
@@ -88,7 +97,8 @@
 			                    linkTarget = ({target}) => target, // given d in links, returns a node identifier string
 			                    linkStroke = "#999", // link stroke color
 			                    linkStrokeOpacity = 0.6, // link stroke opacity
-			                    linkStrokeWidth = 1.5, // given d in links, returns a stroke width in pixels
+			                    // linkStrokeWidth = 1.5, // given d in links, returns a stroke width in pixels
+                                linkStrokeWidth = d => 1.5 * d.value,
 			                    linkStrokeLinecap = "round", // link stroke linecap
 			                    linkStrength = 0.1,
 			                    colors = d3.schemeTableau10, // an array of color strings, for the node groups
@@ -133,7 +143,7 @@
 			const svg = d3.create("svg")
 				.attr("width", width)
 				.attr("height", height)
-				.attr("viewBox", [-width / 2, -height / 2, width, height])
+				.attr("viewBox", [-width / 2, -height / 2, width / 2, height])
 				.attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
 			const link = svg.append("g")
@@ -210,6 +220,7 @@
 </script>
 
 <style>
+
 	#force-graph {
 		height: 80%;
 		bottom: 0;
@@ -217,6 +228,7 @@
 		position: fixed;
 		left: 0;
 		transform: scale(1.55);
+        z-index: -1;
 	}
 	.sliding-menu {
 		height: 100%;
@@ -227,11 +239,14 @@
 		background-color: #ffffff;
 		box-shadow: 0 4px 12px rgba(0,0,0,.19);
 
-		padding-top: 5rem ;
+		padding-top: 3rem ;
 		padding-left: 4rem;
 		padding-right: 4rem;
 
 		text-align: left;
+
+        overflow-y: scroll
+
 	}
 	circle:hover {
 		stroke: #a2d9ff;
