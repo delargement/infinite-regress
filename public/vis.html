@@ -44,6 +44,7 @@
         console.log(data);
         const graph = data.graph_data
         const paper_data = data.paper_data
+          document.getElementById('article-name').innerHTML = '';
         initGraph(graph,paper_data)
     });
   }

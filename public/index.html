@@ -18,8 +18,8 @@
             <div class="params" style="display: flex; flex-direction: row">
             <div class="slidecontainer" style="width: 30%">
                 <span>
-                <input type="range" min="1" max="5" value="1" class="slider" id="myRange" onchange="slider(value)" oninput="slider(value)">
-                    <label id="slider-val" style="margin: 0">Depth: 1</label>
+                <input type="range" min="1" max="5" value="3" class="slider" id="myRange" onchange="slider(value)" oninput="slider(value)">
+                    <label id="slider-val" style="margin: 0">Depth: 3</label>
                 </span>
             </div>
             <input type="submit" class="query-button" onclick="search()" style="">
@@ -77,7 +77,7 @@
     </script>
 <script>
   function main() {
-	document.getElementById("myRange").value = 1;
+	document.getElementById("myRange").value = 3;
   }
 	main();
   function slider(value) {
