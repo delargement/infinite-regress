@@ -10,26 +10,32 @@
     <link rel="stylesheet" href="https://taniarascia.github.io/primitive/css/main.css">
 </head>
 <body>
+    <a id="back" class="button" style="margin: 2rem" onclick="goback()" >Return</a>
     <div class="graph">
         <div id="#svg" ></div>
         <div class="sliding-menu">
+            <h4 id="query-info"></h4>
             <h1 id="article-name">Wait shortly...</h1>
             <h2 id="abstract-header"></h2>
             <p id="article-abstract"></p>
             <button>Share</button>
         </div>
     </div>
-<script type="module">
-    function main() {
+<script >
+  function goback() {
+	  window.location.replace(window.location.origin + "/index.html");
+  }
+  function main() {
     const params = new URLSearchParams(document.location.search);
     // console.log(params)
     const query = params.get('query');
     console.log(query)
     if (query) {
-      document.write(`Hello ${query}`);
+      document.getElementById('query-info').innerHTML = "You queried " + query;
+      // document.write(`Hello ${query}`);
     } else {
 	    window.location.replace(window.location.origin + "/index.html");
-	    document.write('Hello World');
+	    // document.write('Hello World');
         return
     }
     api(query).then(data => {
